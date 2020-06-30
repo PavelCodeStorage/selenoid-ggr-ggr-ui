@@ -35,4 +35,114 @@ Repository provide configuration example of Selenium with Selenoid
 8. Even with docker you can make screenshoots and added it in reporting (i.e add image see: 
 ![dockerimagesallureresults](https://user-images.githubusercontent.com/26840848/39099117-67de4f9e-467d-11e8-9f75-04155c2e0b58.jpg)
 
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ggr-and-ggr-ui
+---
+Overview:
+---
+ 
+Repository provide configuration example of **ggr** (which allow to you create a cluster network with specific quantity of hubs) and **ggr ui** which allow to you see how tests pass on specific hub
+
+**Were created folowing machines:**
+
+**1 - Machine №1 include follow configuration**
+
+![Screenshot from 2019-03-11 22-34-05](https://user-images.githubusercontent.com/26840848/54408570-52b37280-46f3-11e9-8517-79889bd1c0ef.png)
+**2 - Macchine №2 (Virtual machine) Have configured Selenoid (Selenoid UI)** 
+
+**3 - Common screen of configuration**
+![Screenshot from 2019-03-11 22-33-11](https://user-images.githubusercontent.com/26840848/54408749-28ae8000-46f4-11e9-92ba-c128750767be.png)
+
+
+![Peek 2019-03-11 22-17 2](https://user-images.githubusercontent.com/26840848/86094180-da73ea80-bab8-11ea-8118-864b30fe2fa6.gif)
+
+```java
+if (driver == null) {
+            DesiredCapabilities browser = new DesiredCapabilities();
+            browser.setBrowserName("chrome");
+            browser.setVersion("65.0");
+            browser.setCapability("enableVNC", true);
+            browser.setCapability("enableVideo", true);
+            browser.setCapability("screenResolution", "1920x1080x24");
+
+            try {
+
+                driver = new RemoteWebDriver(URI.create("http://localhost:4444/wd/hub").toURL(), browser);
+                driver.manage().window().setSize(new Dimension(1920, 1080));
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
+        return driver;
+ ```
+ 
+ More information on (details how to implement it)
+https://aerokube.com/ggr/latest/
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Seleniod_Without_Docker
+---
+Overview:
+---
+ 
+Repository provide information about Seleniod without Docker configuration
+
+---
+**What you need to do**
+
+1. Download latest Selenoid binary from 
+
+   https://github.com/aerokube/selenoid/releases 
+
+2. Download some IEDriverServer archive from 
+
+   http://selenium-release.storage.googleapis.com/index.html
+
+   and unpack it to some directory (i.e on C disk)
+
+3. Create browsers.json configuration file in the **folder with name config**:
+```json
+         {
+          "internet explorer": {
+          "default": "11",
+           "versions": {
+           "11": {
+           "image": ["C:\\IEDriverServer.exe"]
+            }
+           }
+          }
+         }
+```
+4. From command line execude command :
+
+   **selenoid_windows_amd64.exe -conf config/browsers.json -disable-docker**
+
+5. Don't forget to add some changes in your code see :
+
+```java
+              DesiredCapabilities capabilities = new DesiredCapabilities();
+              capabilities.setBrowserName("internet explorer");
+              capabilities.setVersion("11");
+
+              driver = new RemoteWebDriver(
+                URI.create("http://localhost:4444/wd/hub").toURL(),
+                capabilities
+            );
+```
+6. Run out tests : **mvn clean test**
+
+7. Selenoid_ui **(NOT NECESSARY STEP)**  
+   
+   7.1 Download latest Selenoid_ui binary from 
+ 
+      https://github.com/aerokube/selenoid-ui/releases
+ 
+   7.2 From command line execude command
+ 
+      **selenoid-ui_windows_amd64.exe -listen localhost:8080**
+      
+   7.3 Open **localhost:8080**   
+
 
